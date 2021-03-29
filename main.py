@@ -1,8 +1,20 @@
-from instabot import bot, Bot
+from instabot import Bot
 import tweepy
 import downloadFiles as download
 import cambiarTamaño as cambioTama
 import credential
+
+
+def uploadImagen(bot, txt):
+    # parametros
+    # bot: bot logeado de instagram
+    # txt: Mensaje del post
+    bot.upload_photo('multimedia/imagenes/cambio.jpg', caption=txt)
+
+
+# Subir video al feed de la cuenta de instagram
+def uploadVideo(bot, caption):
+    bot.upload_video('multimedia/videos/video.mp4', caption=caption, thumbnail=None)
 
 
 # funcion de login para cuenta de instagram
@@ -48,13 +60,14 @@ class MyStreamListener(tweepy.StreamListener):
                             urlDown = status.extended_tweet['extended_entities']['media'][0]['media_url']
                             download.descargaImagen(urlDown)  # descargamos la imagen
                             cambioTama.cambioTamanno()  # cambiamos la resolucion para poder subirla a instagram
-                            # uploadImagen(bot, texto)  # subimos la foto
+                            uploadImagen(bot, texto)  # subimos la foto
                         else:  # para descargar videos (BETA)
                             video = 1
                             urlDown = \
                                 status.extended_tweet['extended_entities']['media'][0]['video_info']['variants'][0][
                                     'url']
                             download.descargaVideo(urlDown)
+                            uploadVideo(bot, texto)
                 except AttributeError:
                     print("Datos")
             if hasattr(status, 'extended_entities'):  # Tweet que sean normales(Texto cortos) pero con multiemedia
@@ -70,47 +83,37 @@ class MyStreamListener(tweepy.StreamListener):
                     urlDown = status.extended_entities['media'][0]['media_url']
                     download.descargaImagen(urlDown)  # descargamos la imagen
                     cambioTama.cambioTamanno()  # cambiamos la resolucion para poder subirla a instagram
-                    # uploadImagen(bot, texto)  # subimos la foto
+                    uploadImagen(bot, texto)  # subimos la foto
                 elif tipoMultimedia == 'video':  # videos
                     urlDown = status.extended_entities['media'][0]['video_info']['variants'][1]['url']
                     download.descargaVideo(urlDown)
+                    uploadVideo(bot, texto)
                 else:  # GIFF
                     video = 1
                     urlDown = status.extended_entities['media'][0]['video_info']['variants'][0]['url']
                     download.descargaVideo(urlDown)
+                    uploadVideo(bot, texto)
 
     def on_error(self, status_code):
         print("Error ", status_code)
 
 
-consumer_token = credential.consumer_token
-consumer_secret = credential.consumer_secret
-accessToken = credential.accessToken
-accessTokenSecret = credential.accessTokenSecret
+if __name__ == '__main__':
+    folder = 'config'
+    download.eliminarCarpeta(folder)
+    # autenticacion
+    consumer_token = credential.consumer_token
+    consumer_secret = credential.consumer_secret
+    accessToken = credential.accessToken
+    accessTokenSecret = credential.accessTokenSecret
 
-auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
-auth.set_access_token(accessToken, accessTokenSecret)
-# StreamListener
-api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-myStreamListener = MyStreamListener()
-myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-myStream.filter(follow=['2552946000', '2434125131', '398875471', '354529506', '1131729401366929425', '2225466931'],
-                is_async=True)
-# myStream.filter(follow=['2552946000','2434125131','398875471','354529506','1131729401366929425','2225466931'], is_async=True)
-# bot = loginAcount(credential.user,credential.password)
-print("Hola")
+    auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
+    auth.set_access_token(accessToken, accessTokenSecret)
+    # StreamListener
+    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+    myStreamListener = MyStreamListener()
+    myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
+    myStream.filter(follow=['2552946000','398875471','354529506','2225466931'], is_async=True)
 
-# if __name__ == '__main__':
-# autenticacion
-# consumer_token = credential.consumer_token
-# consumer_secret = credential.consumer_secret
-# accessToken = credential.accessToken
-# accessTokenSecret = credential.accessTokenSecret
-#
-# auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
-# auth.set_access_token(accessToken, accessTokenSecret)
-# # StreamListener
-# api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-# myStreamListener = MyStreamListener()
-# myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-# print("Hola")
+    # cuenta Insta
+    bot = loginAcount(credential.user, credential.password)

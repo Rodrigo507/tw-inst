@@ -1,6 +1,7 @@
 from PIL import Image
 import cv2
 
+
 def cambioTamanno():
     im = Image.open("multimedia/imagenes/img.png")
     # convertimos a JPG
@@ -11,6 +12,7 @@ def cambioTamanno():
     # im_resized = rgb_im.resize((1080, 1920))
     # guardamos la imagen
     im_resized.save('multimedia/imagenes/cambio.jpg')
+
 
 def cambioTamannoVideo():
     vidcap = cv2.VideoCapture("multimedia/videos/video.mp4")

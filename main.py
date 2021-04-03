@@ -115,7 +115,7 @@ if __name__ == '__main__':
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     myStreamListener = MyStreamListener()
     myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-    myStream.filter(follow=['2552946000', '398875471', '354529506', '2225466931','298651418'], is_async=True)
+    myStream.filter(follow=['2552946000', '398875471', '354529506', '2225466931'], is_async=True)
 
     # cuenta Insta
     bot = loginAcount(credenciales.user, credenciales.password)

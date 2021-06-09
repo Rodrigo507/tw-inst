@@ -12,6 +12,7 @@ def cambioTamanno():
     # im_resized = rgb_im.resize((1080, 1920))
     # guardamos la imagen
     im_resized.save('multimedia/imagenes/cambio.jpg')
+    print("Se mejor el tamanno de la imagen")
 
 
 def cambioTamannoVideo():
